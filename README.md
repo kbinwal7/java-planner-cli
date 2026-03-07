@@ -17,9 +17,11 @@ LocalDateTime API
 ## Run the project
 
 Compile:
-
+```
 javac src/*.java
+```
 
 Run:
-
+```
 java -cp src Main
+```

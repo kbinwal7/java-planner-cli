@@ -52,8 +52,8 @@ Task:
 
 Interaction Flow:
 1. Open application
-2. Enter Username and Password  #User Class handels this
-3. Login #User Class handels this
+2. Enter Username and Password  #UserManager Class handels this
+3. Login #UserManager Class handels this
 4. View All Tasks #Planner class
 5. Add new Task #Planner Class
 6. Modify exisiting tasks #Task Class

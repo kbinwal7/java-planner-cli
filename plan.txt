@@ -1,0 +1,63 @@
+PLANNER application
+
+Classes:
+1. User
+2. UserManger
+3. Planner
+4. Task
+
+Should Planner it store tasks? yes, list of Tasks
+#planner takes care of the list 
+
+Main
+   |
+UserManager (user database)
+   |
+User
+   |
+Planner
+   |
+Task
+
+User
+1. Name: String
+2. Password: String
+3. getPassword()
+4. getUserName()
+5. getPlanner()
+
+UserManager
+1. List<Users>
+
+Planner
+1. taskList : List<Task>
+2. viewTasks()
+3. addNewTask()
+4. findtask()
+5. removeTask() 
+6. completeTask()
+
+Task:
+#takes care of itself only
+1. Name : String
+2. index: int
+3. Deadline : DateTime
+4. isComplete: Boolean
+5. Description: String
+6. markComplete()
+7. updateDescription()
+8. updateDeadline()
+
+
+
+Interaction Flow:
+1. Open application
+2. Enter Username and Password  #User Class handels this
+3. Login #User Class handels this
+4. View All Tasks #Planner class
+5. Add new Task #Planner Class
+6. Modify exisiting tasks #Task Class
+7. Exit #Logout, User Class
+
+
+

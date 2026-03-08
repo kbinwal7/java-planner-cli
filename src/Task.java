@@ -1,7 +1,7 @@
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
-public class Task {
+import java.io.Serializable;
+public class Task implements Serializable{
 
     public String name;
     public int index;
@@ -43,6 +43,10 @@ public class Task {
         System.out.println("Deadline is updated!");
     }
 
+    public int getIndex(){
+        return this.index;
+    }
+
     public void printDetails() {
         System.out.println("=========== Task Details ===========");
         System.out.println("Task Name: " + this.name);
@@ -50,5 +54,9 @@ public class Task {
         System.out.println("Status: " + this.status);
         System.out.println("Description: " + this.description);
         System.out.println("====================================");
+    }
+
+    public String toString() {
+        return index + ". " + name + " | " + deadline + " | Completed: " + isComplete;
     }
 }

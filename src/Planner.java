@@ -1,70 +1,91 @@
+import java.util.*;
+import java.io.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-public class Planner {
+public class Planner implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private List<Task> myList;
+    private final String FILE_NAME = "tasks.dat";
+    private int len;
 
     public Planner() {
-        this.myList = new ArrayList<>();
+        myList = loadTasks();
+        len = myList.size();
     }
+
 
     public void viewTasks() {
-        for (int i = 0; i < myList.size(); i++) {
-            Task t = myList.get(i);
-            System.out.println(
-                i + ". " + t.name +
-                ", Deadline: " + t.deadline +
-                ", Status: " + t.status
-            );
+        for (Task t : myList) {
+            System.out.println(t);
         }
     }
 
-    public void addNewtask(Task t) {
-        t.addIndex(myList.size());
-        myList.add(t);
-        System.out.println("New Task is added with following details:");
-        t.printDetails();
+    public void addNewTask(Task task) {
+        task.addIndex(len);
+        ++len;
+        myList.add(task);
+        saveTasks();
+        System.out.println(new java.io.File("tasks.dat").getAbsolutePath());
     }
 
-    public void addNewtask(String name, LocalDateTime deadline, String des) {
-        Task newTask = new Task(name, deadline, des);
-        newTask.addIndex(myList.size());
-        myList.add(newTask);
-        System.out.println("New Task is added with following details:");
-        newTask.printDetails();
+    public void addNewTask(String name, LocalDateTime deadline, String des) {
+        Task curr=new Task(name,deadline,des);
+        curr.addIndex(len);
+        ++len;
+        myList.add(curr);
+        saveTasks();
     }
 
-    public void findTask(int indx) {
-        if (indx >= 0 && indx < myList.size()) {
-            Task curr = myList.get(indx);
-            curr.printDetails();
-        } else {
-            System.out.println("Invalid task index!");
+    public Task findTask(int index) {
+        for (Task t : myList) {
+            if (t.getIndex() == index)
+                return t;
+        }
+        return null;
+    }
+
+    public void removeTask(int index) {
+        myList.removeIf(t -> t.getIndex() == index);
+        saveTasks();
+    }
+
+    public void completeTask(int index) {
+        Task t = findTask(index);
+        if (t != null) {
+            t.markComplete();
+            saveTasks();
         }
     }
 
-    public void removeTask(int indx) {
-        if (indx >= 0 && indx < myList.size()) {
-            myList.remove(indx);
+    private void saveTasks() {
+        try {
+            ObjectOutputStream out =
+                new ObjectOutputStream(new FileOutputStream(FILE_NAME));
 
-            for (int i = 0; i < myList.size(); i++) {
-                myList.get(i).addIndex(i);
-            }
+            out.writeObject(myList);
+            out.close();
 
-            System.out.println("Given Task is deleted!");
-        } else {
-            System.out.println("Invalid task index!");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    public void completeTask(int indx) {
-        if (indx >= 0 && indx < myList.size()) {
-            Task curr = myList.get(indx);
-            curr.markComplete();
-        } else {
-            System.out.println("Invalid task index!");
-        }
+    private List<Task> loadTasks() {
+
+    try {
+        ObjectInputStream in =
+            new ObjectInputStream(new FileInputStream(FILE_NAME));
+
+        List<Task> tasks = (List<Task>) in.readObject();
+
+        in.close();
+
+        return tasks;
+
+    } catch (Exception e) {
+        return new ArrayList<>();
     }
+}
 }

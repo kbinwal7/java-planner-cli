@@ -1,34 +1,81 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.io.*;
 
 public class UserManager {
 
-    private List<User> listedUsers;
+    private List<User> users;
+    private final String FILE_NAME = "users.dat";
 
     public UserManager() {
-        this.listedUsers = new ArrayList<>();
+        users = loadUsers();
     }
 
-    public void registerUser(String u, String p) {
-        User user1 = new User(u, p);
-        listedUsers.add(user1);
-        System.out.println("User registered successfully!");
-    }
+    public void registerUser(String username, String password) {
 
-    public Planner login(String u, String p) {
-
-        for (User user : listedUsers) {
-            if (user.getUserName().equals(u) && user.getPassword().equals(p)) {
-                System.out.println("Login successful!");
-                return user.getPlanner();
+        for (User u : users) {
+            if (u.getUserName().equals(username)) {
+                System.out.println("User already exists.");
+                return;
             }
         }
 
-        System.out.println("Invalid username or password!");
+        User newUser = new User(username, password);
+        users.add(newUser);
+
+        saveUsers();
+
+        System.out.println("Registration successful.");
+    }
+
+    public User login(String username, String password) {
+
+        for (User u : users) {
+
+            if (u.getUserName().equals(username)
+                    && u.getPassword().equals(password)) {
+
+                System.out.println("Login successful.");
+                return u;
+            }
+        }
+
+        System.out.println("Invalid username or password.");
         return null;
     }
 
     public void logout() {
-        System.out.println("Logout Successful!");
+        System.out.println("Logged out.");
+    }
+
+    private void saveUsers() {
+
+        try {
+            ObjectOutputStream out =
+                    new ObjectOutputStream(new FileOutputStream(FILE_NAME));
+
+            out.writeObject(users);
+            out.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<User> loadUsers() {
+
+        try {
+
+            ObjectInputStream in =
+                    new ObjectInputStream(new FileInputStream(FILE_NAME));
+
+            List<User> list = (List<User>) in.readObject();
+            in.close();
+
+            return list;
+
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
     }
 }

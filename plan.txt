@@ -1,63 +1,162 @@
-PLANNER application
+PLANNER APPLICATION
 
 Classes:
 1. User
-2. UserManger
+2. UserManager
 3. Planner
 4. Task
 
-Should Planner it store tasks? yes, list of Tasks
-#planner takes care of the list 
+
+Architecture
 
 Main
    |
-UserManager (user database)
+UserManager (User database + persistence)
    |
 User
    |
-Planner
+Planner (Task manager + persistence)
    |
 Task
 
+___________________________________________
+
 User
-1. Name: String
-2. Password: String
-3. getPassword()
-4. getUserName()
-5. getPlanner()
+
+Attributes:
+1. name : String
+2. password : String
+3. planner : Planner
+
+Methods:
+1. getPassword()
+2. getUserName()
+3. getPlanner()
+
+
+# Represents a registered user of the planner application.
+# Each user owns one Planner instance that manages their tasks.
+___________________________________________
 
 UserManager
-1. List<Users>
+
+Attributes:
+1. users : List<User>
+2. FILE_NAME : "users.dat"
+
+Responsibilities:
+1. Maintain list of registered users
+2. Handle registration
+3. Handle login authentication
+4. Persist users to disk
+
+Methods:
+1. registerUser(username, password)
+2. login(username, password)
+3. logout()
+4. saveUsers()
+5. loadUsers()
+
+Persistence:
+User data is serialized and stored in: users.dat
+
+___________________________________________
 
 Planner
+
+Attributes:
 1. taskList : List<Task>
-2. viewTasks()
-3. addNewTask()
-4. findtask()
-5. removeTask() 
-6. completeTask()
+2. FILE_NAME : "tasks.dat"
 
-Task:
-#takes care of itself only
-1. Name : String
-2. index: int
-3. Deadline : DateTime
-4. isComplete: Boolean
-5. Description: String
-6. markComplete()
-7. updateDescription()
-8. updateDeadline()
+Responsibilities:
+1. Maintain list of tasks
+2. Add tasks
+3. Remove tasks
+4. Mark tasks complete
+5. Search tasks
+6. Persist tasks to disk
 
+Methods:
+1. viewTasks()
+2. addNewTask()
+3. findTask()
+4. removeTask()
+5. completeTask()
+6. saveTasks()
+7. loadTasks()
 
+Persistence:
+Tasks are serialized and stored in: tasks.dat
 
-Interaction Flow:
+___________________________________________
+
+Task
+
+Attributes:
+1. name : String
+2. index : int
+3. deadline : LocalDateTime
+4. isComplete : Boolean
+5. description : String
+
+Responsibilities:
+Each task manages its own state.
+
+Methods:
+1. markComplete()
+2. updateDescription()
+3. updateDeadline()
+4. getIndex()
+5. toString()
+
+___________________________________________
+
+Interaction Flow
+
 1. Open application
-2. Enter Username and Password  #UserManager Class handels this
-3. Login #UserManager Class handels this
-4. View All Tasks #Planner class
-5. Add new Task #Planner Class
-6. Modify exisiting tasks #Task Class
-7. Exit #Logout, User Class
+
+2. User enters username and password
+
+3. UserManager handles authentication
+   - login()
+   - registerUser()
+
+4. After successful login
+   - User object returned
+
+5. User accesses Planner
+   - user.getPlanner()
+
+6. Planner loads existing tasks from file
+
+7. User operations
+
+   View Tasks        → Planner.viewTasks()
+   Add Task          → Planner.addNewTask()
+   Modify Task       → Task.updateDescription()
+   Complete Task     → Planner.completeTask()
+   Remove Task       → Planner.removeTask()
+
+8. Planner automatically saves changes to file
+
+9. User exits application
+   - logout handled by UserManager
+
+
+___________________________________________
+
+Data Persistence: Files created by the application: users.dat   → stores List<User>, tasks.dat   → stores List<Task>
+
+# Serialization used:
+- ObjectOutputStream
+- ObjectInputStream
+- Serializable interface
+
+
+Theory:
+- Serialization is a mechanism of converting the state of an object into a byte stream
+- If we want to make a class serializable, then it must implement the Serializable interface. This interface does not contain any methods or variables ( marker interface), but it gives a signal that the class is ready for serialization.
+- Deserialization is the reverse process where the byte stream is used to recreate the actual Java object in memory. This mechanism is used to persist the object.
 
 
 

@@ -8,7 +8,8 @@ public class Main {
 
         Scanner sc = new Scanner(System.in);
         UserManager manager = new UserManager();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MM yyyy HH mm");
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("dd MM yyyy HH mm");
 
         while (true) {
 
@@ -20,6 +21,7 @@ public class Main {
 
             int option = Integer.parseInt(sc.nextLine());
 
+            // REGISTER
             if (option == 1) {
 
                 System.out.print("Enter username: ");
@@ -31,6 +33,7 @@ public class Main {
                 manager.registerUser(username, password);
             }
 
+            // LOGIN
             else if (option == 2) {
 
                 System.out.print("Enter username: ");
@@ -39,9 +42,14 @@ public class Main {
                 System.out.print("Enter password: ");
                 String password = sc.nextLine();
 
-                Planner planner = manager.login(username, password);
+                User user = manager.login(username, password);
 
-                if (planner == null) continue;
+                if (user == null) {
+                    System.out.println("Login failed.");
+                    continue;
+                }
+
+                Planner planner = user.getPlanner();
 
                 while (true) {
 
@@ -52,14 +60,16 @@ public class Main {
                     System.out.println("4. Complete Task");
                     System.out.println("5. Remove Task");
                     System.out.println("6. Logout");
-                    System.out.print("Enter choice: ");
 
+                    System.out.print("Enter choice: ");
                     int action = Integer.parseInt(sc.nextLine());
 
+                    // VIEW TASKS
                     if (action == 1) {
                         planner.viewTasks();
                     }
 
+                    // ADD TASK
                     else if (action == 2) {
 
                         System.out.print("Task Name: ");
@@ -68,22 +78,30 @@ public class Main {
                         System.out.print("Enter deadline (dd MM yyyy HH mm): ");
                         String dateInput = sc.nextLine();
 
-                        LocalDateTime deadline = LocalDateTime.parse(dateInput, formatter);
+                        LocalDateTime deadline =
+                                LocalDateTime.parse(dateInput, formatter);
 
                         System.out.print("Description: ");
                         String desc = sc.nextLine();
 
-                        planner.addNewtask(name, deadline, desc);
+                        planner.addNewTask(name, deadline, desc);
                     }
 
+                    // FIND TASK
                     else if (action == 3) {
 
                         System.out.print("Enter task index: ");
                         int idx = Integer.parseInt(sc.nextLine());
 
-                        planner.findTask(idx);
+                        Task t = planner.findTask(idx);
+
+                        if (t != null)
+                            System.out.println(t);
+                        else
+                            System.out.println("Task not found.");
                     }
 
+                    // COMPLETE TASK
                     else if (action == 4) {
 
                         System.out.print("Enter task index: ");
@@ -92,6 +110,7 @@ public class Main {
                         planner.completeTask(idx);
                     }
 
+                    // REMOVE TASK
                     else if (action == 5) {
 
                         System.out.print("Enter task index: ");
@@ -100,6 +119,7 @@ public class Main {
                         planner.removeTask(idx);
                     }
 
+                    // LOGOUT
                     else if (action == 6) {
                         manager.logout();
                         break;
@@ -111,6 +131,7 @@ public class Main {
                 }
             }
 
+            // EXIT
             else if (option == 3) {
                 System.out.println("Exiting application.");
                 break;

@@ -1,27 +1,28 @@
-public class User{
-    private String userName;
+import java.io.Serializable;
+
+public class User implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private String name;
     private String password;
-    private Planner myPlanner;
+    private Planner planner;
 
-    public User(String username, String password){
-        this.userName=username;
-        this.password=password;
-        this.myPlanner=new Planner();
-
-    }
-    public String getUserName(){
-        return this.userName;
+    public User(String name, String password) {
+        this.name = name;
+        this.password = password;
+        this.planner = new Planner();
     }
 
-    public String getPassword(){
-        return this.password;
+    public String getUserName() {
+        return name;
     }
 
-    public Planner getPlanner(){
-        return this.myPlanner;
+    public String getPassword() {
+        return password;
     }
-    
 
-    
-
+    public Planner getPlanner() {
+        return planner;
+    }
 }
